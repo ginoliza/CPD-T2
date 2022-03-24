@@ -1,46 +1,39 @@
 #include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
-#include <algorithm>
+#include <vector>
+#include <random>
 #include <chrono>
 
 using namespace std;
 
-#define n 256
+#define n 2048
 
-int A[n][n];
-int B[n][n];
-int C[n][n];
+int main()
+{
+	vector<vector<float>> A, B;
+	//llenar
+	for (int i = 0; i < n; ++i) {
+		A.push_back(vector<float>());
+		B.push_back(vector<float>());
+		for (int j = 0; j < n; ++j) {
+			A[i].push_back((float)rand() / (float)RAND_MAX);
+			B[i].push_back((float)rand() / (float)RAND_MAX);
+		}
+	}
 
-int main() {
+	cout << "Ejecutando multiplicacion de matrices clasica...\n";
+	auto started = chrono::high_resolution_clock::now();
 
-    //llenar 
-    srand(NULL);
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            A[i][j] = rand() % 10;
-			B[i][j] = rand() % 10;
-            C[i][j] = 0;
-        }
-    }
-        
-    //tomar tiempo inicial
-    auto inicio = std::chrono::high_resolution_clock::now();
+	vector<vector<float>> C(n, vector<float>(n, 0));
+	for (int i = 0; i < n; i++) {
+		for (int j = 0; j < n; j++) {
+			for (int k = 0; k < n; k++) {
+				C[i][j] += A[i][k] * B[k][j];
+			}
+		}
+	}	
 
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            for (int k = 0; k < n; k++) {
-                C[i][j] += A[i][k] * B[k][j];
-            }
-        }
-    }
-    //tomar tiempo final
-    auto fin = std::chrono::high_resolution_clock::now();
-    
-    //imprimir total = final - inicial
-    double total = std::chrono::duration<double, std::milli>(fin - inicio).count();
-    cout << "Multiplicacion clasica: " << total << "\n";
+	auto done = chrono::high_resolution_clock::now();
+	cout << "Tiempo de ejecucion (ms): " << chrono::duration_cast<chrono::milliseconds>(done - started).count() << "\n\n";
 
-    return 0;
+	return 0;
 }

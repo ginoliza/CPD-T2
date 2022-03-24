@@ -1,71 +1,56 @@
 #include <iostream>
+#include <vector>
+#include <math.h>
+#include <random>
 #include <chrono>
-#include <algorithm>
 
 using namespace std;
 
-#define n 4096
+#define n 2048
 
-int A[n][n];
-int B[n][n];
-int C[n][n];
-
-int main() {	
-	int b = 6;
-	
-	srand(NULL);
-	for (int i = 0; i < n; i++) {
-		for (int j = 0; j < n; j++) {			
-			A[i][j] = rand() % 10;
-			B[i][j] = rand() % 10;
-			C[i][j] = 0;
+int main()
+{
+	vector<vector<float>> A, B;
+	// llenar
+	for (int i = 0; i < n; ++i) {
+		A.push_back(vector<float>());
+		B.push_back(vector<float>());
+		for (int j = 0; j < n; ++j) {
+			A[i].push_back((float)rand() / (float)RAND_MAX);
+			B[i].push_back((float)rand() / (float)RAND_MAX);
 		}
-	}
+	}	
+	
+	// iteramos a traves de distintos exponentes para calcular el tamaño del bloque
+	//for (int EX = 1; EX < 8; EX++) {
 
-	//tomar tiempo inicial
-	auto inicio = std::chrono::high_resolution_clock::now();
+		//cout << "Exponente: " << EX << endl;
+		auto started = chrono::high_resolution_clock::now();
 
-	for (int i0 = 0; i0 < n; i0 = i0 + b)
-	for (int j0 = 0; j0 < n; j0 = j0 + b)
-	for (int z0 = 0; z0 < n; z0 = z0 + b)
-	for (int i = i0; i < min(i0 + b, n); ++i)
-	for (int j = j0; j < min(j0 + b, n); ++j)
-	for (int z = z0; z < min(z0 + b, n); ++z){
-		C[i][j] = C[i][j] + A[i][z] * B[z][j];	
-	}
+		int cantBloq = pow(2, EX); // cuántos bloques queremos 	[1]
+		//int cantBloq = n/32; // cuántos bloques queremos			[2]
+		//int cantBloq = 2;//											[3]
+		int b = n / cantBloq; // tamaño del bloque
+		vector<vector<float>> C(n, vector<float>(n, 0));
 
-	//tomar tiempo final
-	auto fin = std::chrono::high_resolution_clock::now();
+		for (int ii = 1; ii <= cantBloq; ii++) {
+			for (int jj = 1; jj <= cantBloq; jj++) {
+				for (int kk = 1; kk <= cantBloq; kk++) {
+					for (int i = (ii - 1) * b; i < ii * b; ++i) {
+						for (int j = (jj - 1) * b; j < jj * b; ++j) {
+							for (int k = (kk - 1) * b; k < kk * b; ++k) {
+								C[i][j] += A[i][k] * B[k][j];
+							}
+						}
+					}
+				}
 
-	//imprimir total = final - inicial
-	double total = std::chrono::duration<double, std::milli>(fin - inicio).count();
-	cout << "Multiplicacion clasica: " << total << "\n";
+			}
+		}
 
-	/*
-	cout<<"Matriz A: "<<endl;
-	for(int i=0; i<n; ++i){
-	   for(int j=0; j<n; ++j){
-		   cout<<A[i][j]<<" ";
-	   }
-	   cout<<endl;
-	}
-   
-	cout<<"Matriz B: "<<endl;
-   for(int i=0; i<n; ++i){
-	   for(int j=0; j<n; ++j){
-		   cout<<B[i][j]<<" ";
-	   }
-	   cout<<endl;
-   }
-   cout<<"Matriz C: "<<endl;
-   for(int i=0; i<n; ++i){
-	   for(int j=0; j<n; ++j){
-		   cout<<C[i][j]<<" ";
-	   }
-	   cout<<endl;
-   }
- */
-
+		auto done = chrono::high_resolution_clock::now();
+		cout << chrono::duration_cast<chrono::milliseconds>(done - started).count() << "\n\n";
+	//}
 
 	return 0;
 }
