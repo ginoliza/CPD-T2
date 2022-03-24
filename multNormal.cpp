@@ -33,7 +33,7 @@ int main()
 	}
 
 	auto fin = chrono::high_resolution_clock::now();
-	cout << "Tiempo de ejecucion (ms): " << chrono::duration_cast<chrono::milliseconds>(fin - inicio).count() << "\n\n";
+	cout << chrono::duration_cast<chrono::milliseconds>(fin - inicio).count() << "\n\n";
 
 	return 0;
 }
