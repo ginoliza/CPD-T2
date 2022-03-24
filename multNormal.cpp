@@ -21,7 +21,7 @@ int main()
 	}
 
 	cout << "Ejecutando multiplicacion de matrices clasica...\n";
-	auto started = chrono::high_resolution_clock::now();
+	auto inicio = chrono::high_resolution_clock::now();
 
 	vector<vector<float>> C(n, vector<float>(n, 0));
 	for (int i = 0; i < n; i++) {
@@ -30,10 +30,10 @@ int main()
 				C[i][j] += A[i][k] * B[k][j];
 			}
 		}
-	}	
+	}
 
-	auto done = chrono::high_resolution_clock::now();
-	cout << "Tiempo de ejecucion (ms): " << chrono::duration_cast<chrono::milliseconds>(done - started).count() << "\n\n";
+	auto fin = chrono::high_resolution_clock::now();
+	cout << "Tiempo de ejecucion (ms): " << chrono::duration_cast<chrono::milliseconds>(fin - inicio).count() << "\n\n";
 
 	return 0;
 }
